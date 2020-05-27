@@ -19,5 +19,5 @@ gzip masterAgent.tsv
 bq load --project_id=$PROJECT_ID \
     --replace --schema="masterAgent.schema.json" \
     --source_format=CSV --field_delimiter="\t" \
-    --max_bad_records=10000 production.properties \
+    --max_bad_records=10000 r123.MasterAgent \
     masterAgent.tsv.gz

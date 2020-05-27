@@ -19,5 +19,5 @@ gzip secondary_listing.tsv
 bq load --project_id=$PROJECT_ID \
     --replace --schema="listingSecondary.schema.json" \
     --source_format=CSV --field_delimiter="\t" \
-    --max_bad_records=10000 production.properties \
+    --max_bad_records=10000 r123.SecondaryListing \
     secondary_listing.tsv.gz
