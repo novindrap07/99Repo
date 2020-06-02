@@ -10,14 +10,21 @@ aws s3 cp s3://data.99iddev.net/rumah123-daily-sync/listing-secondary/listingSec
 aws s3 cp $1 secondary_listing.tsv
 
 # Data Cleaning
-sed -i 's/\\n//g' secondary_listing.tsv
+sed -i 's/\\n//g' secondary_listing.tsv | cp secondary_listing.tsv secondary_listing.csv
+
+# Migrate to Google Storage
+## Migrate Schema
+gsutil -m cp -R s3://data.99iddev.net/rumah123-daily-sync/listing-secondary/listingSecondary.schema.json gs://rea_99jv/SecondaryListing/listingSecondary.schema.json
+
+## Migrate Data 
+gsutil -m cp -R s3://data.99iddev.net/rumah123-daily-sync/listing-secondary/secondary_listing.csv gs://rea_99jv/SecondaryListing/secondary_listing.csv
 
 # Compress with GZip
-gzip secondary_listing.tsv
+# gzip secondary_listing.tsv
 
 # Load to BigQuery
 bq load --project_id=$PROJECT_ID \
-    --replace --schema="listingSecondary.schema.json" \
+    --replace --schema= gs://rea_99jv/SecondaryListing/listingSecondary.schema.json \
     --source_format=CSV --field_delimiter="\t" \
     --max_bad_records=10000 r123.SecondaryListing \
-    secondary_listing.tsv.gz
+    gs://rea_99jv/SecondaryListing/secondary_listing.csv
